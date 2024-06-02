@@ -1,8 +1,9 @@
-# React + Vite
+# React API Seçici
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bu proje, MUI bileşenlerini kullanarak iki farklı API'den veri çekmeyi gösteren bir React uygulamasıdır. Kullanıcı, Football API veya Dummy JSON API arasında seçim yapabilir, gerekli parametreleri girebilir ve veriyi çekebilir.
 
-Currently, two official plugins are available:
+## Bağımlılıklar
+- node_modules
+- mui npm paketi
+- axios npm paketi
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
