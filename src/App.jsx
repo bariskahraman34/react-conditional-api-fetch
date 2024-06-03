@@ -1,15 +1,7 @@
-import { Container, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Container, Box, FormControl, InputLabel, Select, MenuItem, Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper  } from '@mui/material';
+import { useEffect, useState , useRef } from 'react';
 import Loading from './components/Loading.jsx';
 import {hackerrankAPI , dummyJSONAPI} from './api/axios.js';
-import { useRef } from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 
 function App() {
   const [isLoading , setIsLoading] = useState(false);
@@ -32,12 +24,17 @@ function App() {
       }else if(selectedAPI === "posts"){
         const number = inputRef.current.value;
         dummyJSONAPI.get(`${selectedAPI}?limit=${number}`).then(result => setData(result)).finally(() => setIsLoading(false))
-        resultRef.current.style.color = 'red';
+        
       }
     }
   },[selectedAPI,selectedYear,postValue])
+
+  useEffect(() => {
+    if (resultRef.current) {
+      resultRef.current.style.color = 'red';
+    }
+  },[data])
   
-  console.log(resultRef.current);
   return (
     <>
       <Box
@@ -113,7 +110,7 @@ function App() {
         >
           <div ref={resultRef} style={{marginTop:'20px'}}>
             <ul>
-              {data.map(d =><li key={d.id}><h4>Başlık: {d.title}</h4><span>İçerik: {d.body}</span></li>)}
+              {data.map(d => <li key={d.id}><h4>Başlık: {d.title}</h4><span>İçerik: {d.body}</span></li>)}
             </ul>
           </div>  
         </Container>
@@ -132,9 +129,9 @@ function App() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((d) => (
+                {data.map((d,index) => (
                   <TableRow
-                    key={d.name}
+                    key={index}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
