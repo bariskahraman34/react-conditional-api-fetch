@@ -16,5 +16,5 @@ export const dummyJSONAPI = axios.create({
 })
 
 dummyJSONAPI.interceptors.response.use(function(response){
-  return response.data.posts;
+  return response.data;
 })

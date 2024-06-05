@@ -1,4 +1,4 @@
-import { Container, Box, FormControl, InputLabel, Select, MenuItem, Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper  } from '@mui/material';
+import { Container, Box, FormControl, InputLabel, Select, MenuItem, Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper,TextField  } from '@mui/material';
 import { useEffect, useState , useRef } from 'react';
 import Loading from './components/Loading.jsx';
 import {hackerrankAPI , dummyJSONAPI} from './api/axios.js';
@@ -6,11 +6,11 @@ import {hackerrankAPI , dummyJSONAPI} from './api/axios.js';
 function App() {
   const [isLoading , setIsLoading] = useState(false);
   const [selectedAPI,setSelectedAPI] = useState('');
-  const [postValue , setPostValue] = useState(10);
+  const [postValue , setPostValue] = useState(1);
   const [selectedYear , setSelectedYear] = useState(2011);
   const [data, setData] = useState([]);
-  const inputRef = useRef(null);
-  const resultRef = useRef(null);
+  const titleRef = useRef(null);
+  const bodyRef = useRef(null);
 
   const handleAPIChange = (e) => {
     setSelectedAPI(e.target.value);
@@ -22,16 +22,17 @@ function App() {
       if(selectedAPI === "football_competitions"){
         hackerrankAPI.get(`${selectedAPI}?year=${selectedYear}`).then(result => setData(result)).finally(() => setIsLoading(false))
       }else if(selectedAPI === "posts"){
-        const number = inputRef.current.value;
-        dummyJSONAPI.get(`${selectedAPI}?limit=${number}`).then(result => setData(result)).finally(() => setIsLoading(false))
-        
+        dummyJSONAPI.get(`${selectedAPI}/${postValue}`).then(result => setData(result)).finally(() => setIsLoading(false))
       }
     }
   },[selectedAPI,selectedYear,postValue])
 
   useEffect(() => {
-    if (resultRef.current) {
-      resultRef.current.style.color = 'red';
+    if (titleRef.current) {
+      titleRef.current.style.color = 'red';
+    }
+    if(bodyRef.current) {
+      bodyRef.current.style.color = "blue";
     }
   },[data])
   
@@ -62,19 +63,7 @@ function App() {
         </FormControl>
         {selectedAPI === "posts" && (
           <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel id="demo-simple-select-label">Gösterilecek Post Sayısını Seçiniz</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Gösterilecek Post Sayısını Seçiniz"
-              value={postValue}
-              onChange={(e) => setPostValue(e.target.value)}
-              inputRef={inputRef}
-            >
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={20}>20</MenuItem>
-              <MenuItem value={30}>30</MenuItem>
-            </Select>
+            <TextField id="outlined-basic" label="Görüntülenecek Post Numarasını Giriniz..." variant="outlined" onChange={(e) => e.target.value > 0 && setPostValue(e.target.value)} />
           </FormControl>
         )}
         {selectedAPI === "football_competitions" && (
@@ -100,19 +89,38 @@ function App() {
       {!isLoading && selectedAPI == 'posts' && (
         <Container
           component="main"
-          maxWidth="xs"
           sx={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
+            marginTop: "30px"
           }}
         >
-          <div ref={resultRef} style={{marginTop:'20px'}}>
-            <ul>
-              {data.map(d => <li key={d.id}><h4>Başlık: {d.title}</h4><span>İçerik: {d.body}</span></li>)}
-            </ul>
-          </div>  
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650}} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">ID</TableCell>
+                  <TableCell align="left">Title</TableCell>
+                  <TableCell align="left">Body</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody >
+                  <TableRow
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                     <TableCell component="th" scope="row" ref={titleRef}>
+                      {data.id}
+                    </TableCell>
+                    <TableCell component="th" scope="row" ref={titleRef}>
+                      {data.title}
+                    </TableCell>
+                    <TableCell align="left" ref={bodyRef}>{data.body}</TableCell>
+                  </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Container>
       )}
       {!isLoading && selectedAPI == "football_competitions" && (
