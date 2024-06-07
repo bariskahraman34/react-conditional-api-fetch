@@ -13,6 +13,7 @@ function App() {
   const bodyRef = useRef(null);
 
   const handleAPIChange = (e) => {
+    setData([]);
     setSelectedAPI(e.target.value);
   }
 
